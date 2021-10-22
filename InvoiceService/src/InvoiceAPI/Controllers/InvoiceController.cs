@@ -1,5 +1,6 @@
 ﻿using InvoiceService.Application.Invoices.Commands.CreateInvoice;
 using InvoiceService.Application.Invoices.Commands.DeleteInvoice;
+using InvoiceService.Application.Invoices.Commands.UpdateInvoice;
 using InvoiceService.Application.Invoices.Queries.GetInvoiceById;
 using InvoiceService.Application.Invoices.Queries.GetInvoices;
 using Microsoft.AspNetCore.Mvc;
@@ -15,21 +16,21 @@ namespace InvoiceAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class InvoiceController : ApiControllerBase
+    public class InvoicesController : ApiControllerBase
     {
-        private readonly ILogger<InvoiceController> _logger;
-        public InvoiceController(ILogger<InvoiceController> logger)
+        private readonly ILogger<InvoicesController> _logger;
+        public InvoicesController(ILogger<InvoicesController> logger)
         {
             _logger = logger;
         }
-        // GET: api/<InvoiceController>
+        // GET: api/<InvoicesController>
         [HttpGet]
         public async Task<IEnumerable<InvoiceDto>> Get()
         {
             return await Mediator.Send(new GetInvoicesQuery());
         }
 
-        // GET api/<InvoiceController>/5
+        // GET api/<InvoicesController>/5
         [HttpGet("{id}")]
         public async Task<InvoiceDto> Get(Guid id)
         {
@@ -37,20 +38,21 @@ namespace InvoiceAPI.Controllers
             return await Mediator.Send(command);
         }
 
-        // POST api/<InvoiceController>
+        // POST api/<InvoicesController>
         [HttpPost]
         public async void Post([FromBody] CreateInvoiceCommand command)
         {
              await Mediator.Send( command);
         }
 
-        // PUT api/<InvoiceController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT api/<InvoicesController>/5
+        [HttpPut]
+        public async void Put([FromBody] UpdateInvoiceCommand command)
         {
+            await Mediator.Send(command);
         }
 
-        // DELETE api/<InvoiceController>/5
+        // DELETE api/<InvoicesController>/5
         [HttpDelete("{id}")]
         public void Delete(Guid  id)
         {

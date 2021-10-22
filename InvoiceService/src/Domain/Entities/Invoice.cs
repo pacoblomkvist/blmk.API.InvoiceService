@@ -10,9 +10,10 @@ namespace InvoiceService.Domain.Entities
     public class Invoice : AuditableEntity, IHasDomainEvent
     {
         public Guid? ClientId { get; set; }
+        public String InvoiceNumber { get; set; }
         public IList<InvoiceLines> Lines { get; set; } = new List<InvoiceLines>();
         public DateTimeOffset? InvoiceDate { get; set; }
-        public Decimal TotalAmount { get; set; }
+        public Decimal TotalAmount { get => Lines?.Sum(l => l.TotalEuros)??0; }
         public bool Charged { get; set; }
         
         public List<DomainEvent> DomainEvents { get; set; } = new List<DomainEvent>();

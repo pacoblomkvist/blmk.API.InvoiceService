@@ -23,8 +23,6 @@
 
   <ItemGroup>
     <Folder Include="Invoices\Commands\DeleteInvoiceLine\" />
-    <Folder Include="Invoices\Commands\UpdateInvoiceLine\" />
-    <Folder Include="Invoices\Commands\UpdateInvoice\" />
     <Folder Include="Invoices\EventHandlers\" />
   </ItemGroup>
 
