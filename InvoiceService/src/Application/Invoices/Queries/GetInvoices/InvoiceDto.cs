@@ -14,8 +14,9 @@ namespace InvoiceService.Application.Invoices.Queries.GetInvoices
     {
         public Guid Id { get; set; }
         public Guid? ClientId { get; set; }
+        public String InvoiceNumber { get; set; }
         public IList<InvoiceLineDto> Items { get; set; }
-        public DateTimeOffset? InvoiceDate { get; set; }
+        public DateTimeOffset InvoiceDate { get; set; }
         public Decimal TotalAmount { get; set; }
         public bool Charged { get; set; }
         public void Mapping(Profile profile)

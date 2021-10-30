@@ -19,10 +19,9 @@ namespace InvoiceService.Application.Invoices.Commands.UpdateInvoice
             lines = new List<InsertInvoiceLineDto>();
         }
         public Guid InvoiceId { get; set; }
-        public string InvoiceNumber { get; set; }
         public Guid? ClientId { get; set; }
         public IEnumerable<InsertInvoiceLineDto> lines { get; set; }
-        public DateTimeOffset? InvoiceDate { get; set; }
+        public DateTimeOffset InvoiceDate { get; set; }
         public bool Charged { get; set; }
     }
 
@@ -41,18 +40,10 @@ namespace InvoiceService.Application.Invoices.Commands.UpdateInvoice
                 ClientId = request.ClientId,
                 InvoiceDate = request.InvoiceDate,
                 Charged = request.Charged,
-                InvoiceNumber = request.InvoiceNumber
             };
             if (request.lines.Count() > 0)
             {
-                invoice.Lines = request.lines.Select(l => new InvoiceLines
-                {
-                    Id = l.Id,
-                    Amount = l.Amount,
-                    InvoiceId = invoice.Id,
-                    Item = l.Item,
-                    Quantity = l.Quantity
-                }).ToList();
+                invoice.Lines = request.lines.Select(l => new InvoiceLines(l.Quantity, invoice.Id, l.Item, l.Amount)).ToList();
             }
             _repo.Update(invoice);
             //_repo.Commit();

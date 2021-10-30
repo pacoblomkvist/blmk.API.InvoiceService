@@ -10,17 +10,23 @@ namespace InvoiceService.Domain.Entities
 {
     public class InvoiceLines : AuditableEntity
     {
-       public Guid InvoiceId { get; set; }
+        InvoiceLines()
+        {
+        }
+
+        public InvoiceLines(int quantity, Guid invoiceId, string item, decimal amount)
+        {
+            Quantity = quantity;
+            InvoiceId = invoiceId;
+            Item = item;
+            Amount = amount;
+        }
+        public Guid InvoiceId { get; set; }
         public String Item { get; set; }
-        public int _quantity;
-        public int Quantity { get => _quantity ; set{
-                if (value <= 0)
-                {
-                    throw new LessThanZeroException(value);
-                }
-                _quantity = value;
-            } }
+        public int Quantity { get; set; }
         public Decimal Amount { get; set; }
         public Decimal TotalEuros { get => Amount * Quantity; }
+
+        
     }
 }

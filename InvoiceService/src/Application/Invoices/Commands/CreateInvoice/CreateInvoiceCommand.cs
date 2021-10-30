@@ -16,10 +16,9 @@ namespace InvoiceService.Application.Invoices.Commands.CreateInvoice
         {
             lines = new List<InsertInvoiceLineDto>();
         }
-        public Guid InvoiceId { get => Guid.NewGuid(); }
         public Guid? ClientId { get; set; }
         public IEnumerable<InsertInvoiceLineDto> lines { get; set; }
-        public DateTimeOffset? InvoiceDate { get; set; }
+        public DateTimeOffset InvoiceDate { get; set; }
     }
     public class CreateInvoiceCommandHandler : IRequestHandler<CreateInvoiceCommand>
     {
@@ -28,28 +27,27 @@ namespace InvoiceService.Application.Invoices.Commands.CreateInvoice
         {
             _repo = repository;
         }
-        public Task<Unit> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(CreateInvoiceCommand request, CancellationToken cancellationToken)
         {
-            var invoice = new Invoice
+            var invoicesThisYear = (await _repo.GetAllThat(c => c.Year == DateTime.Now.Year));
+            var number = 0;
+            if (invoicesThisYear.Any())
             {
-                Id = request.InvoiceId,
-                ClientId = request.ClientId,
-                InvoiceDate = request.InvoiceDate
-            };
-            if (request.lines.Count() > 0)
-            {
-                invoice.Lines = request.lines.Select(l => new InvoiceLines
-                {
-                    Id =l.Id,
-                    Amount = l.Amount,
-                    InvoiceId = invoice.Id,
-                    Item = l.Item,
-                    Quantity = l.Quantity                  
-                }).ToList();
+                number = invoicesThisYear.Max(c => c.Number);
             }
+            number += 1;
+
+
+            var invoice = new Invoice(request.ClientId, request.InvoiceDate,
+                charged: false, invoiceNumber: number, invoiceYear: request.InvoiceDate.Year);
+
+            if (request.lines.Any())
+            {
+                invoice.Lines = request.lines.Select(l => new InvoiceLines(l.Quantity, invoice.Id, l.Item, l.Amount)).ToList();
+            }
+
             _repo.Add(invoice);
-            //_repo.Commit();
-            return Unit.Task;
+            return await Unit.Task;
         }
     }
 }

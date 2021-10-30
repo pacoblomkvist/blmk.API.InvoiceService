@@ -12,7 +12,6 @@ namespace InvoiceService.Application.Invoices.Commands.CreateInvoice
         public CreateInvoiceCommandValidator()
         {
             RuleFor(v => v.ClientId).NotNull();
-            RuleFor(v => v.InvoiceId).NotNull();
         }
     }
 }
